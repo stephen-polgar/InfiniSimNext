@@ -23,6 +23,7 @@ tools
 *.map
 *.out
 pinetime*.cbp
+spiNorFlash.raw
 
 # InfiniTime's files
 core
@@ -48,4 +49,3 @@ Testing/Temporary/
 #build files
 src/nRF5_SDK_15.3.0_59ac345
 src/arm-none-eabi
-

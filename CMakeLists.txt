@@ -1,7 +1,7 @@
 message(STATUS "Using CMake version ${CMAKE_VERSION}")
 cmake_minimum_required(VERSION 3.10...${CMAKE_VERSION})
 
-SET(InfiniTime_DIR "${CMAKE_SOURCE_DIR}/InfiniTime" CACHE PATH "Path to InfiniTime source path to use for simulator")
+SET(InfiniTime_DIR "${CMAKE_SOURCE_DIR}/InfiniTimeNext" CACHE PATH "Path to InfiniTimeNext source path to use for simulator")
 
 if(NOT EXISTS ${InfiniTime_DIR})
   message(FATAL_ERROR "Can't access folder '${InfiniTime_DIR}'. Try `git submodule update --init --recursive` to initialize the git submodule of InfiniTime")
@@ -14,7 +14,7 @@ endif()
 file(READ "${InfiniTime_DIR}/CMakeLists.txt" main_cmake)
 string(REGEX MATCH "project\\(pinetime VERSION ([0-9]*\.[0-9]*\.[0-9]*)" _ ${main_cmake})
 set(PROJECT_VERSION ${CMAKE_MATCH_1})
-message(STATUS "InfiniTime PROJECT_VERSION extracted: ${PROJECT_VERSION}")
+message(STATUS "InfiniTimeNext PROJECT_VERSION extracted: ${PROJECT_VERSION}")
 
 project(InfiniSim VERSION ${PROJECT_VERSION} LANGUAGES C CXX)
 # https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
