@@ -1,11 +1,9 @@
 # [InfiniSimNext](https://github.com/stephen-polgar/InfiniSimNext)
 
 This repository is a fork of the [InfiniSim](https://github.com/InfiniTimeOrg/InfiniSim) Simulator for InfiniTime project.
-
+## Simulator for [InfiniTimeNext](https://github.com/stephen-polgar/InfiniTimeNext) project.
 
 [![Build InfiniSim LVGL Simulator](https://github.com/InfiniTimeOrg/InfiniSim/actions/workflows/lv_sim.yml/badge.svg)](https://github.com/InfiniTimeOrg/InfiniSim/actions/workflows/lv_sim.yml)
-
-## Simulator for [InfiniTimeNext](https://github.com/stephen-polgar/InfiniTimeNext) project.
 
 Experience the `InfiniTime` user interface directly on your PC, to shorten the time until you get your hands on a real [PineTime smartwatch](https://www.pine64.org/pinetime/).
 Or use it to develop new Watchfaces, new Screens, or quickly iterate on the user interface.
