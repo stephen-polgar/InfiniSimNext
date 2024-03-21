@@ -27,13 +27,13 @@
 
 #include "BootloaderVersion.h"
 #include "components/battery/BatteryController.h"
-#include "components/ble/BleController.h"
 #include "components/ble/NotificationManager.h"
 #include "components/brightness/BrightnessController.h"
 #include "components/motor/MotorController.h"
 #include "components/datetime/DateTimeController.h"
 #include "components/timer/TimerController.h"
 #include "components/heartrate/HeartRateController.h"
+
 #include "components/motion/MotionController.h"
 #include "components/fs/FS.h"
 #include "drivers/Spi.h"
@@ -99,6 +99,11 @@ extern "C"
   extern monitor_t monitor;
 }
 
+/*
+#ifndef pdMSTOTICKS
+#define pdMS_TO_TICKS( xTimeInMs ) ( ( TickType_t ) ( ( ( TickType_t ) ( xTimeInMs ) * ( TickType_t ) configTICK_RATE_HZ ) / ( TickType_t ) 1000 ) )
+#endif
+*/
 void saveScreenshot()
 {
   auto now = std::chrono::system_clock::now();
@@ -348,46 +353,15 @@ Pinetime::Drivers::Hrs3300 heartRateSensor{twiMaster, heartRateSensorTwiAddress}
 
 TimerHandle_t debounceTimer;
 TimerHandle_t debounceChargeTimer;
-Pinetime::Controllers::Battery batteryController;
-Pinetime::Controllers::Ble bleController;
-
-Pinetime::Controllers::HeartRateController heartRateController;
-Pinetime::Applications::HeartRateTask heartRateApp(heartRateSensor, heartRateController);
-
-Pinetime::Controllers::FS fs{spiNorFlash};
-Pinetime::Controllers::Settings settingsController{fs};
-Pinetime::Controllers::MotorController motorController{};
-
-Pinetime::Controllers::DateTime dateTimeController{settingsController};
-Pinetime::Drivers::Watchdog watchdog;
-Pinetime::Controllers::NotificationManager notificationManager;
-Pinetime::Controllers::MotionController motionController;
-Pinetime::Controllers::TouchHandler touchHandler;
-Pinetime::Controllers::ButtonHandler buttonHandler;
-Pinetime::Controllers::BrightnessController brightnessController{};
 
 Pinetime::Applications::DisplayApp displayApp(lcd,
                                               touchPanel,
-                                              batteryController,
-                                              bleController,
-                                              dateTimeController,
-                                              watchdog,
-                                              notificationManager,
-                                              heartRateController,
-                                              settingsController,
-                                              motorController,
-                                              motionController,
-                                              brightnessController,
-                                              touchHandler,
-                                              fs);
-
+                                              spiNorFlash);
 Pinetime::System::SystemTask systemTask(spi,
                                         spiNorFlash,
-                                        twiMaster,                                                                      
+                                        twiMaster,
                                         heartRateSensor,
                                         motionSensor,
-                                        heartRateApp,
-                                        buttonHandler,
                                         &displayApp);
 
 // variable used in SystemTask.cpp Work loop
@@ -432,18 +406,18 @@ public:
       SDL_FreeSurface(simDisplayBgRaw);
       simDisplayBgRaw = NULL;
     }
-    motorController.Init();
-    settingsController.Init();
+    displayApp.motorController.Init();
+    displayApp.settingsController.Init();
 
     printf("initial free_size = %u\n", xPortGetFreeHeapSize());
 
     // update time to current system time once on startup
-    dateTimeController.SetCurrentTime(std::chrono::system_clock::now());
+    displayApp.dateTimeController.SetCurrentTime(std::chrono::system_clock::now());
 
     systemTask.Start();
 
     // initialize the first LVGL screen
-    // const auto clockface = settingsController.GetClockFace();
+    // const auto clockface = displayApp.settingsController.GetClockFace();
     // switch_to_screen(1+clockface);
   }
 
@@ -523,7 +497,7 @@ public:
     {
       SDL_RenderCopy(renderer, simDisplayTexture, NULL, NULL);
     }
-    { // motorController.motor_is_running
+    { // displayApp.motorController.motor_is_running
       constexpr const int center_x = bubbleLeftEdge;
       constexpr const int center_y = 216;
       bool motor_is_running = nrf_gpio_pin_read(Pinetime::PinMap::Motor);
@@ -539,7 +513,7 @@ public:
     { // ble.motor_is_running
       constexpr const int center_x = bubbleLeftEdge;
       constexpr const int center_y = 24;
-      if (bleController.IsConnected())
+      if (displayApp.bleController.IsConnected())
       {
         draw_circle_blue(center_x, center_y, 15);
       }
@@ -548,12 +522,12 @@ public:
         draw_circle_grey(center_x, center_y, 15);
       }
     }
-    // batteryController.percentRemaining
+    // displayApp.batteryController.percentRemaining
     {
       const int center_x = bubbleLeftEdge;
       const int center_y = 164;
       const int max_bar_length = 150;
-      const int filled_bar_length = max_bar_length * (batteryController.percentRemaining / 100.0);
+      const int filled_bar_length = max_bar_length * (displayApp.batteryController.percentRemaining / 100.0);
       const int rect_height = 14;
       SDL_Rect rect{
           .x = center_x - rect_height / 2,
@@ -570,10 +544,10 @@ public:
       SDL_RenderFillRect(renderer, &rect);
       // set color and new x pos, draw again
     }
-    { // batteryController.isCharging
+    { // displayApp.batteryController.isCharging
       constexpr const int center_x = bubbleLeftEdge;
       constexpr const int center_y = 120;
-      if (batteryController.isCharging)
+      if (displayApp.batteryController.isCharging)
       {
         draw_circle_yellow(center_x, center_y, 15);
       }
@@ -582,9 +556,9 @@ public:
         draw_circle_grey(center_x, center_y, 15);
       }
     }
-    { // brightnessController.Level
+    { // displayApp.brightnessController.Level
       constexpr const int center_y = 72;
-      const Pinetime::Controllers::BrightnessController::Levels level = brightnessController.Level();
+      const Pinetime::Controllers::BrightnessController::Levels level = displayApp.brightnessController.Level();
       uint8_t level_idx = 0;
       if (level == Pinetime::Controllers::BrightnessController::Levels::Low)
       {
@@ -653,14 +627,14 @@ public:
     notif.message[title.size() + 1 + message.size()] = '\0'; // zero terminate the message
     notif.size = title.size() + 1 + message.size();
     notif.category = static_cast<Pinetime::Controllers::NotificationManager::Categories>(notification_idx % 11);
-    notificationManager.Push(std::move(notif));
+    displayApp.notificationManager.Push(std::move(notif));
     // send next message the next time
     notification_idx++;
     if (notification_idx >= notification_messages.size() / 2)
     {
       notification_idx = 0;
     }
-    if (settingsController.GetNotificationStatus() == Pinetime::Controllers::Settings::Notification::On)
+    if (displayApp.settingsController.GetNotificationStatus() == Pinetime::Controllers::Settings::Notification::On)
     {
       if (screen_off_created)
       {
@@ -736,30 +710,30 @@ public:
     info.isValid = true;
     info.touching = true;
     info.gesture = gesture;
-    touchHandler.ProcessTouchInfo(info);
+    displayApp.touchHandler.ProcessTouchInfo(info);
     displayApp.PushMessage(Pinetime::Applications::Display::Messages::TouchEvent);
     info.touching = false;
     info.gesture = Pinetime::Drivers::Cst816S::Gestures::None;
-    touchHandler.ProcessTouchInfo(info);
+    displayApp.touchHandler.ProcessTouchInfo(info);
   }
   // modify the simulated controller depending on the pressed key
   void handle_key(SDL_Keycode key)
   {
     if (key == 'r')
     {
-      motorController.StartRinging();
+      displayApp.motorController.StartRinging();
     }
     else if (key == 'R')
     {
-      motorController.StopRinging();
+      displayApp.motorController.StopRinging();
     }
     else if (key == 'm')
     {
-      motorController.RunForDuration(100);
+      displayApp.motorController.RunForDuration(100);
     }
     else if (key == 'M')
     {
-      motorController.RunForDuration(255);
+      displayApp.motorController.RunForDuration(255);
     }
     else if (key == 'n')
     {
@@ -767,55 +741,55 @@ public:
     }
     else if (key == 'N')
     {
-      notificationManager.ClearNewNotificationFlag();
+      displayApp.notificationManager.ClearNewNotificationFlag();
     }
     else if (key == 'b')
     {
-      bleController.Connect();
+      displayApp.bleController.Connect();
     }
     else if (key == 'B')
     {
-      bleController.Disconnect();
+      displayApp.bleController.Disconnect();
     }
     else if (key == 'v')
     {
-      if (batteryController.percentRemaining >= 90)
+      if (displayApp.batteryController.percentRemaining >= 90)
       {
-        batteryController.percentRemaining = 100;
+        displayApp.batteryController.percentRemaining = 100;
       }
       else
       {
-        batteryController.percentRemaining += 10;
+        displayApp.batteryController.percentRemaining += 10;
       }
     }
     else if (key == 'V')
     {
-      if (batteryController.percentRemaining <= 10)
+      if (displayApp.batteryController.percentRemaining <= 10)
       {
-        batteryController.percentRemaining = 0;
+        displayApp.batteryController.percentRemaining = 0;
       }
       else
       {
-        batteryController.percentRemaining -= 10;
+        displayApp.batteryController.percentRemaining -= 10;
       }
     }
     else if (key == 'c')
     {
-      batteryController.isCharging = true;
-      batteryController.isPowerPresent = true;
+      displayApp.batteryController.isCharging = true;
+      displayApp.batteryController.isPowerPresent = true;
     }
     else if (key == 'C')
     {
-      batteryController.isCharging = false;
-      batteryController.isPowerPresent = false;
+      displayApp.batteryController.isCharging = false;
+      displayApp.batteryController.isPowerPresent = false;
     }
     else if (key == 'l' && !screen_off_created)
     {
-      brightnessController.Higher();
+      displayApp.brightnessController.Higher();
     }
     else if (key == 'L' && !screen_off_created)
     {
-      brightnessController.Lower();
+      displayApp.brightnessController.Lower();
     }
     else if (key == 'p')
     {
@@ -842,23 +816,23 @@ public:
     }
     else if (key == 'h')
     {
-      if (heartRateController.State() == Pinetime::Controllers::HeartRateController::States::Stopped)
+      if (displayApp.heartRateController.State() == Pinetime::Controllers::HeartRateController::States::Stopped)
       {
-        heartRateController.Start();
+        displayApp.heartRateController.Start();
       }
-      else if (heartRateController.State() == Pinetime::Controllers::HeartRateController::States::NotEnoughData)
+      else if (displayApp.heartRateController.State() == Pinetime::Controllers::HeartRateController::States::NotEnoughData)
       {
-        heartRateController.Update(Pinetime::Controllers::HeartRateController::States::Running, 10);
+        displayApp.heartRateController.Update(Pinetime::Controllers::HeartRateController::States::Running, 10);
       }
       else
       {
-        uint8_t heartrate = heartRateController.HeartRate();
-        heartRateController.Update(Pinetime::Controllers::HeartRateController::States::Running, heartrate + 10);
+        uint8_t heartrate = displayApp.heartRateController.HeartRate();
+        displayApp.heartRateController.Update(Pinetime::Controllers::HeartRateController::States::Running, heartrate + 10);
       }
     }
     else if (key == 'H')
     {
-      heartRateController.Stop();
+      displayApp.heartRateController.Stop();
     }
     else if (key == 'i')
     {
@@ -907,16 +881,16 @@ public:
     { // up
       send_gesture(Pinetime::Drivers::Cst816S::Gestures::SlideRight);
     }
-    batteryController.voltage = batteryController.percentRemaining * 50;
+    displayApp.batteryController.voltage = displayApp.batteryController.percentRemaining * 50;
   }
 
   void generate_weather_data(bool clear)
   {
     if (clear)
     {
-      systemTask.nimble().weather().SetCurrentWeather(0, 0, 0);
+      systemTask.nimbleController.weatherService.SetCurrentWeather(0, 0, 0);
       std::array<Pinetime::Controllers::SimpleWeatherService::Forecast::Day, Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days;
-      systemTask.nimble().weather().SetForecast(0, days);
+      systemTask.nimbleController.weatherService.SetForecast(0, days);
       return;
     }
     auto timestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -924,7 +898,7 @@ public:
 
     // Generate current weather data
     int16_t temperature = (rand() % 81 - 40) * 100;
-    systemTask.nimble().weather().SetCurrentWeather((uint64_t)timestamp, temperature, rand() % 9);
+    systemTask.nimbleController.weatherService.SetCurrentWeather((uint64_t)timestamp, temperature, rand() % 9);
 
     // Generate forecast data
     std::array<Pinetime::Controllers::SimpleWeatherService::Forecast::Day, Pinetime::Controllers::SimpleWeatherService::MaxNbForecastDays> days;
@@ -933,7 +907,7 @@ public:
       days[i] = Pinetime::Controllers::SimpleWeatherService::Forecast::Day{
           (int16_t)(temperature - rand() % 10 * 100), (int16_t)(temperature + rand() % 10 * 100), Pinetime::Controllers::SimpleWeatherService::Icons(rand() % 9)};
     }
-    systemTask.nimble().weather().SetForecast((uint64_t)timestamp, days);
+    systemTask.nimbleController.weatherService.SetForecast((uint64_t)timestamp, days);
   }
 
   void handle_touch_and_button()
@@ -970,14 +944,14 @@ public:
   {
     if (screen_idx == 1)
     {
-      settingsController.SetWatchFace(Pinetime::Applications::WatchFace::Digital);
+      displayApp.settingsController.SetWatchFace(Pinetime::Applications::WatchFace::Digital);
       displayApp.StartApp(Pinetime::Applications::Apps::Clock, Pinetime::Applications::Screens::Screen::FullRefreshDirections::None);
     }
     else if (screen_idx == 2)
     {
-      settingsController.SetWatchFace(Pinetime::Applications::WatchFace::Analog);
+      displayApp.settingsController.SetWatchFace(Pinetime::Applications::WatchFace::Analog);
       displayApp.StartApp(Pinetime::Applications::Apps::Clock, Pinetime::Applications::Screens::Screen::FullRefreshDirections::None);
-    }   
+    }
     else if (screen_idx == 7)
     {
       displayApp.StartApp(Pinetime::Applications::Apps::FirmwareUpdate, Pinetime::Applications::Screens::Screen::FullRefreshDirections::None);
@@ -1034,7 +1008,7 @@ public:
   // render the current status of the simulated controller
   void refresh_screen()
   {
-    const Pinetime::Controllers::BrightnessController::Levels level = brightnessController.Level();
+    const Pinetime::Controllers::BrightnessController::Levels level = displayApp.brightnessController.Level();
     if (level == Pinetime::Controllers::BrightnessController::Levels::Off)
     {
       if (!screen_off_created)
@@ -1180,7 +1154,7 @@ int main(int argc, char **argv)
   /*Initialize the HAL (display, input devices, tick) for LVGL*/
   hal_init();
 
-  fs.Init();
+  displayApp.filesystem.Init();
 
   // initialize the core of our Simulator
   Framework fw(fw_status_window_visible, 240, 240);

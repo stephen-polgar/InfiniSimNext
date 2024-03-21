@@ -1,5 +1,6 @@
 #include "components/ble/SimpleWeatherService.h"
-
+#include "components/datetime/DateTimeController.h"
+#include "systemtask/SystemTask.h"
 #include <algorithm>
 #include <array>
 #include <cstring>
@@ -62,9 +63,6 @@ int WeatherCallback(uint16_t /*connHandle*/, uint16_t /*attrHandle*/, struct ble
   return static_cast<Pinetime::Controllers::SimpleWeatherService*>(arg)->OnCommand(ctxt);
 }
 
-SimpleWeatherService::SimpleWeatherService(const DateTime& dateTimeController) : dateTimeController(dateTimeController) {
-}
-
 void SimpleWeatherService::Init() {
   //ble_gatts_count_cfg(serviceDefinition);
   //ble_gatts_add_svcs(serviceDefinition);
@@ -91,7 +89,7 @@ int SimpleWeatherService::OnCommand(struct ble_gatt_access_ctxt* ctxt) {
 
 std::optional<SimpleWeatherService::CurrentWeather> SimpleWeatherService::Current() const {
   if (currentWeather) {
-    auto currentTime = dateTimeController.UTCDateTime().time_since_epoch();
+    auto currentTime = System::SystemTask::displayApp->dateTimeController.UTCDateTime().time_since_epoch();
     auto weatherTpSecond = std::chrono::seconds {currentWeather->timestamp};
     auto weatherTp = std::chrono::duration_cast<std::chrono::seconds>(weatherTpSecond);
     auto delta = currentTime - weatherTp;
@@ -105,7 +103,7 @@ std::optional<SimpleWeatherService::CurrentWeather> SimpleWeatherService::Curren
 
 std::optional<SimpleWeatherService::Forecast> SimpleWeatherService::GetForecast() const {
   if (forecast) {
-    auto currentTime = dateTimeController.UTCDateTime().time_since_epoch();
+    auto currentTime = System::SystemTask::displayApp->dateTimeController.UTCDateTime().time_since_epoch();
     auto weatherTpSecond = std::chrono::seconds {forecast->timestamp};
     auto weatherTp = std::chrono::duration_cast<std::chrono::seconds>(weatherTpSecond);
     auto delta = currentTime - weatherTp;

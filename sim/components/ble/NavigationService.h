@@ -34,9 +34,7 @@ namespace Pinetime {
 
     class NavigationService {
     public:
-      explicit NavigationService(Pinetime::System::SystemTask& system);
-
-      void Init();
+          void Init();
 
 //      int OnCommand(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt* ctxt);
 
@@ -57,7 +55,6 @@ namespace Pinetime {
       std::string m_manDist;
       int m_progress = 0;
 
-      Pinetime::System::SystemTask& m_system;
     };
   }
 }

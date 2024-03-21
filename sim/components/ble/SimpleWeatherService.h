@@ -5,17 +5,12 @@
 #include <vector>
 #include <memory>
 
-//#define min // workaround: nimble's min/max macros conflict with libstdc++
-//#define max
-//#include <host/ble_gap.h>
-//#include <host/ble_uuid.h>
 #include <optional>
 #include <cstring>
 #include <array>
-//#undef max
-//#undef min
 
-#include "components/datetime/DateTimeController.h"
+
+
 
 int WeatherCallback(uint16_t connHandle, uint16_t attrHandle, struct ble_gatt_access_ctxt* ctxt, void* arg);
 
@@ -24,8 +19,7 @@ namespace Controllers {
 
 class SimpleWeatherService {
 public:
-  explicit SimpleWeatherService(const DateTime& dateTimeController);
-
+  
   void Init();
 
   int OnCommand(struct ble_gatt_access_ctxt* ctxt);
@@ -126,8 +120,6 @@ private:
   //    {0}};
 
   uint16_t eventHandle {};
-
-  const Pinetime::Controllers::DateTime& dateTimeController;
 
   std::optional<CurrentWeather> currentWeather;
   std::optional<Forecast> forecast;

@@ -21,14 +21,11 @@
 #include <string>
 
 namespace Pinetime {
-  namespace System {
-    class SystemTask;
-  }
+ 
   namespace Controllers {
     class MusicService {
     public:
-      explicit MusicService(Pinetime::System::SystemTask& system);
-
+      
       void Init();
 
       //int OnCommand(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt* ctxt);
@@ -83,7 +80,6 @@ namespace Pinetime {
       bool repeat {false};
       bool shuffle {false};
 
-      Pinetime::System::SystemTask& m_system;
     };
   }
 }

@@ -12,16 +12,12 @@
 //  { 0xd0, 0x42, 0x19, 0x3a, 0x3b, 0x43, 0x23, 0x8e, 0xfe, 0x48, 0xfc, 0x78, 0x01, 0x00, 0x02, 0x00 }
 
 namespace Pinetime {
-
-  namespace System {
-    class SystemTask;
-  }
   namespace Controllers {
     class NotificationManager;
 
     class AlertNotificationService {
     public:
-      AlertNotificationService(Pinetime::System::SystemTask& systemTask, Pinetime::Controllers::NotificationManager& notificationManager);
+      
       void Init();
 
       int OnAlert(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt* ctxt);
@@ -58,10 +54,7 @@ namespace Pinetime {
 
 //      struct ble_gatt_chr_def characteristicDefinition[3];
 //      struct ble_gatt_svc_def serviceDefinition[2];
-
-      Pinetime::System::SystemTask& systemTask;
-      NotificationManager& notificationManager;
-
+      
       uint16_t eventHandle;
     };
   }

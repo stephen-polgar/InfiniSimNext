@@ -22,38 +22,6 @@
 
 using namespace Pinetime::Controllers;
 
-NimbleController::NimbleController(Pinetime::System::SystemTask& systemTask,
-                                   Pinetime::Controllers::Ble& bleController,
-                                   DateTime& dateTimeController,
-                                   Pinetime::Controllers::NotificationManager& notificationManager,
-                                   Controllers::Battery& batteryController,
-                                   Pinetime::Drivers::SpiNorFlash& spiNorFlash,
-                                   Controllers::HeartRateController& heartRateController,
-                                   Controllers::MotionController& motionController,
-                                   Controllers::FS& fs)
-  : systemTask {systemTask},
-    bleController {bleController},
-    dateTimeController {dateTimeController},
-    notificationManager {notificationManager},
-    spiNorFlash {spiNorFlash},
-    fs {fs},
-//    dfuService {systemTask, bleController, spiNorFlash},
-
-//    currentTimeClient {dateTimeController},
-    anService {systemTask, notificationManager},
-//    alertNotificationClient {systemTask, notificationManager},
-//    currentTimeService {dateTimeController},
-    musicService {systemTask},
-    weatherService {dateTimeController},
-    navService {systemTask},
-//    batteryInformationService {batteryController},
-//    immediateAlertService {systemTask, notificationManager},
-//    heartRateService {systemTask, heartRateController},
-    motionService {*this, motionController} {
-//    fsService {systemTask, fs},
-//    serviceDiscovery({&currentTimeClient, &alertNotificationClient}) {
-}
-
 //void nimble_on_reset(int reason) {
 //  NRF_LOG_INFO("Nimble lost sync, resetting state; reason=%d", reason);
 //}

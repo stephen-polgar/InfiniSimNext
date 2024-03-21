@@ -27,28 +27,7 @@ using namespace Pinetime::Controllers;
 //   }
 // }
 //
-// TODO Refactoring - remove dependency to SystemTask
-MotionService::MotionService(NimbleController& nimble, Controllers::MotionController& motionController)
-  : nimble {nimble},
-    motionController {motionController}/*,
-    characteristicDefinition {{.uuid = &stepCountCharUuid.u,
-                               .access_cb = MotionServiceCallback,
-                               .arg = this,
-                               .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_NOTIFY,
-                               .val_handle = &stepCountHandle},
-                              {.uuid = &motionValuesCharUuid.u,
-                               .access_cb = MotionServiceCallback,
-                               .arg = this,
-                               .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_NOTIFY,
-                               .val_handle = &motionValuesHandle},
-                              {0}},
-    serviceDefinition {
-      {.type = BLE_GATT_SVC_TYPE_PRIMARY, .uuid = &motionServiceUuid.u, .characteristics = characteristicDefinition},
-      {0},
-    } */{
-  // TODO refactor to prevent this loop dependency (service depends on controller and controller depends on service)
-  motionController.SetService(this);
-}
+
 //
 // void MotionService::Init() {
 //   int res = 0;

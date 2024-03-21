@@ -52,67 +52,6 @@ namespace {
   //}
 }
 
-Pinetime::Controllers::MusicService::MusicService(Pinetime::System::SystemTask& system) : m_system(system) {
-//  characteristicDefinition[0] = {.uuid = &msEventCharUuid.u,
-//                                 .access_cb = MusicCallback,
-//                                 .arg = this,
-//                                 .flags = BLE_GATT_CHR_F_NOTIFY,
-//                                 .val_handle = &eventHandle};
-//  characteristicDefinition[1] = {.uuid = &msStatusCharUuid.u,
-//                                 .access_cb = MusicCallback,
-//                                 .arg = this,
-//                                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[2] = {.uuid = &msTrackCharUuid.u,
-//                                 .access_cb = MusicCallback,
-//                                 .arg = this,
-//                                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[3] = {.uuid = &msArtistCharUuid.u,
-//                                 .access_cb = MusicCallback,
-//                                 .arg = this,
-//                                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[4] = {.uuid = &msAlbumCharUuid.u,
-//                                 .access_cb = MusicCallback,
-//                                 .arg = this,
-//                                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[5] = {.uuid = &msPositionCharUuid.u,
-//                                 .access_cb = MusicCallback,
-//                                 .arg = this,
-//                                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[6] = {.uuid = &msTotalLengthCharUuid.u,
-//                                 .access_cb = MusicCallback,
-//                                 .arg = this,
-//                                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[7] = {.uuid = &msTotalLengthCharUuid.u,
-//                                 .access_cb = MusicCallback,
-//                                 .arg = this,
-//                                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[8] = {.uuid = &msTrackNumberCharUuid.u,
-//                                 .access_cb = MusicCallback,
-//                                 .arg = this,
-//                                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[9] = {.uuid = &msTrackTotalCharUuid.u,
-//                                 .access_cb = MusicCallback,
-//                                 .arg = this,
-//                                 .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[10] = {.uuid = &msPlaybackSpeedCharUuid.u,
-//                                  .access_cb = MusicCallback,
-//                                  .arg = this,
-//                                  .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[11] = {.uuid = &msRepeatCharUuid.u,
-//                                  .access_cb = MusicCallback,
-//                                  .arg = this,
-//                                  .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[12] = {.uuid = &msShuffleCharUuid.u,
-//                                  .access_cb = MusicCallback,
-//                                  .arg = this,
-//                                  .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[13] = {0};
-//
-//  serviceDefinition[0] = {
-//    .type = BLE_GATT_SVC_TYPE_PRIMARY, .uuid = &msUuid.u, .characteristics = characteristicDefinition};
-//  serviceDefinition[1] = {0};
-}
-
 void Pinetime::Controllers::MusicService::Init() {
   //uint8_t res = 0;
   //res = ble_gatts_count_cfg(serviceDefinition);

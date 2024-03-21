@@ -25,25 +25,6 @@ void AlertNotificationService::Init() {
 //  ASSERT(res == 0);
 }
 
-AlertNotificationService::AlertNotificationService(System::SystemTask& systemTask, NotificationManager& notificationManager)
-  :
-//  : characteristicDefinition {{.uuid = &ansCharUuid.u, .access_cb = AlertNotificationCallback, .arg = this, .flags = BLE_GATT_CHR_F_WRITE},
-//                              {.uuid = &notificationEventUuid.u,
-//                               .access_cb = AlertNotificationCallback,
-//                               .arg = this,
-//                               .flags = BLE_GATT_CHR_F_NOTIFY,
-//                               .val_handle = &eventHandle},
-//                              {0}},
-//    serviceDefinition {
-//      {/* Device Information Service */
-//       .type = BLE_GATT_SVC_TYPE_PRIMARY,
-//       .uuid = &ansUuid.u,
-//       .characteristics = characteristicDefinition},
-//      {0},
-//    },
-    systemTask {systemTask},
-    notificationManager {notificationManager} {
-}
 
 int AlertNotificationService::OnAlert(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt* ctxt) {
 //  if (ctxt->op == BLE_GATT_ACCESS_OP_WRITE_CHR) {

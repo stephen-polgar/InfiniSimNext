@@ -1,7 +1,4 @@
 #include "components/battery/BatteryController.h"
-//#include "drivers/PinMap.h"
-//#include <hal/nrf_gpio.h>
-//#include <nrfx_saadc.h>
 #include <algorithm>
 
 using namespace Pinetime::Controllers;
@@ -89,7 +86,3 @@ void Battery::MeasureVoltage() {
 //    isReading = false;
 //  }
 //}
-
-void Battery::Register(Pinetime::System::SystemTask* systemTask) {
-  this->systemTask = systemTask;
-}

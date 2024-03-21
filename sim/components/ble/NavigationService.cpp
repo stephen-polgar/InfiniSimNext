@@ -45,25 +45,6 @@ namespace {
 //  }
 } // namespace
 
-Pinetime::Controllers::NavigationService::NavigationService(Pinetime::System::SystemTask& system) : m_system(system) {
-//  characteristicDefinition[0] = {
-//    .uuid = &navFlagCharUuid.u, .access_cb = NAVCallback, .arg = this, .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//
-//  characteristicDefinition[1] = {
-//    .uuid = &navNarrativeCharUuid.u, .access_cb = NAVCallback, .arg = this, .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[2] = {
-//    .uuid = &navManDistCharUuid.u, .access_cb = NAVCallback, .arg = this, .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//  characteristicDefinition[3] = {
-//    .uuid = &navProgressCharUuid.u, .access_cb = NAVCallback, .arg = this, .flags = BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_READ};
-//
-//  characteristicDefinition[4] = {0};
-//
-//  serviceDefinition[0] = {.type = BLE_GATT_SVC_TYPE_PRIMARY, .uuid = &navUuid.u, .characteristics = characteristicDefinition};
-//  serviceDefinition[1] = {0};
-
-  m_progress = 0;
-}
-
 void Pinetime::Controllers::NavigationService::Init() {
 //  int res = 0;
 //  res = ble_gatts_count_cfg(serviceDefinition);

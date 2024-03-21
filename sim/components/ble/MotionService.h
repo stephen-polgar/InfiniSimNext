@@ -7,13 +7,10 @@
 // #undef min
 
 namespace Pinetime {
-  namespace Controllers {
-    class NimbleController;
-    class MotionController;
-
+  namespace Controllers {  
     class MotionService {
     public:
-      MotionService(NimbleController& nimble, Controllers::MotionController& motionController);
+     
       // void Init();
       // int OnStepCountRequested(uint16_t attributeHandle, ble_gatt_access_ctxt* context);
       // void OnNewStepCountValue(uint32_t stepCount);
@@ -24,9 +21,8 @@ namespace Pinetime {
       bool IsMotionNotificationSubscribed() const;
 
     private:
-      NimbleController& nimble;
-      Controllers::MotionController& motionController;
-
+      friend class MotionController;
+      explicit MotionService() = default; 
       // struct ble_gatt_chr_def characteristicDefinition[3];
       // struct ble_gatt_svc_def serviceDefinition[2];
 

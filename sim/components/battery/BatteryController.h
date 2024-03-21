@@ -1,18 +1,16 @@
 #pragma once
+
 #include <cstdint>
-#include "systemtask/SystemTask.h"
 
 namespace Pinetime {
   namespace Controllers {
-
     class Battery {
     public:
       Battery();
 
       void ReadPowerState();
       void MeasureVoltage();
-      void Register(System::SystemTask* systemTask);
-
+      
       uint8_t PercentRemaining() const {
         return percentRemaining;
       }
@@ -56,8 +54,6 @@ namespace Pinetime {
       static constexpr uint8_t lowBatteryThreshold {20};
 
       bool isReading = false;
-
-      Pinetime::System::SystemTask* systemTask = nullptr;
     };
   }
 }
