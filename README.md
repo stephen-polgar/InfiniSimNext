@@ -90,7 +90,7 @@ cmake --build build -j4
 
 The following configuration settings can be added to the first `cmake -S . -B build` call
 
-- `-DInfiniTime_DIR=InfiniTime`: a full path to an existing InfiniTime repository checked out.
+- `-DInfiniTime_DIR=InfiniTimeNext`: a full path to an existing InfiniTime repository checked out.
   Inside that directory the `src/libs/lvgl` submodule must be checked out as well.
   The default value points to the InfiniTime submodule in this repository.
 - `-DMONITOR_ZOOM=1`: scale simulator window by this factor
@@ -99,10 +99,6 @@ The following configuration settings can be added to the first `cmake -S . -B bu
   Per default InfiniSim tries to use `libpng` to create screenshots in PNG format.
   This requires `libpng` development libraries as build and runtime dependency.
   Can be disabled with cmake config setting `-DWITH_PNG=OFF`.
-- `-DENABLE_USERAPPS`: ordered list of user applications to build into InfiniTime.
-  Values must be fields from the enumeration `Pinetime::Applications::Apps` and must be separated by a comma.
-  Ex: `-DENABLE_USERAPPS="Apps::Timer, Apps::Alarm"`.
-  The default list of user applications will be selected if this variable is not set.
 
 ## Run Simulator
 
