@@ -329,12 +329,9 @@ Pinetime::Drivers::SpiMaster spi{Pinetime::Drivers::SpiMaster::SpiModule::SPI0,
                                   Pinetime::PinMap::SpiMosi,
                                   Pinetime::PinMap::SpiMiso}};
 
-Pinetime::Drivers::Spi lcdSpi{spi, Pinetime::PinMap::SpiLcdCsn};
-Pinetime::Drivers::St7789 lcd{lcdSpi, Pinetime::PinMap::LcdDataCommand, Pinetime::PinMap::LcdReset};
-
-Pinetime::Drivers::Spi flashSpi{spi, Pinetime::PinMap::SpiFlashCsn};
+Pinetime::Drivers::St7789 lcd{spi, Pinetime::PinMap::SpiLcdCsn, Pinetime::PinMap::LcdDataCommand, Pinetime::PinMap::LcdReset};
 Pinetime::Drivers::SpiNorFlash spiNorFlash{"spiNorFlash.raw"};
-// Pinetime::Controllers::FS filesystem{spiNorFlash};  // not work ??
+Pinetime::Controllers::FS filesystem{spiNorFlash};
 
 // The TWI device should work @ up to 400Khz but there is a HW bug which prevent it from
 // respecting correct timings. According to erratas heet, this magic value makes it run
@@ -357,9 +354,8 @@ TimerHandle_t debounceChargeTimer;
 
 Pinetime::Applications::DisplayApp displayApp(lcd,
                                               touchPanel,
-                                              spiNorFlash);  //  filesystem);  not working
-Pinetime::System::SystemTask systemTask(spi,
-                                        spiNorFlash,
+                                              filesystem);
+Pinetime::System::SystemTask systemTask(spi,                                        
                                         twiMaster,
                                         heartRateSensor,
                                         motionSensor,
