@@ -663,12 +663,7 @@ int command_settings(const std::string &program_name, const std::vector<std::str
       return "Orange";
     return "unknown";
   };
-  /*
-  std::cout << "PTSColorTime: " << color_str(settingsController.GetPTSColorTime()) << std::endl;
-  std::cout << "PTSColorBar: " << color_str(settingsController.GetPTSColorBar()) << std::endl;
-  std::cout << "PTSColorBG: " << color_str(settingsController.GetPTSColorBG()) << std::endl;
-  */
-  std::cout << "ClockType: " << (settingsController.GetClockType() == Settings::ClockType::H24 ? "H24" : "H12") << std::endl;
+  
   {
     auto notif = settingsController.GetNotificationStatus();
     auto notif_str = [](auto val)
