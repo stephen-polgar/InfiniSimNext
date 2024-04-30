@@ -69,6 +69,10 @@ bool xTimerStop(TimerHandle_t &xTimer,  TickType_t xTicksToWait) {
   return SDL_RemoveTimer(xTimer.timer_id);
 }
 
+bool xTimerDelete(TimerHandle_t &xTimer,  TickType_t xTicksToWait) {  
+  return xTimerStop(xTimer,  xTicksToWait);
+}
+
 TickType_t xTimerGetExpiryTime( TimerHandle_t xTimer )
 {
   return xTimer.expiry_time;

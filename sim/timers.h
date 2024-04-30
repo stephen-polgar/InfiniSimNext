@@ -155,6 +155,8 @@ bool xTimerReset(TimerHandle_t &xTimer,  TickType_t xTicksToWait);
 
 bool xTimerStop(TimerHandle_t &xTimer,  TickType_t xTicksToWait);
 
+bool xTimerDelete(TimerHandle_t &xTimer,  TickType_t xTicksToWait);
+
 /**
 * TickType_t xTimerGetExpiryTime( TimerHandle_t xTimer );
 *
